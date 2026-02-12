@@ -1,0 +1,5 @@
+{
+  "name": "OncoScreen AI",
+  "description": "Aplikasi screening awal risiko kanker berbasis AI yang menganalisis profil kesehatan dan gejala pengguna untuk memberikan penilaian risiko dan rekomendasi kesehatan.",
+  "requestFramePermissions": []
+}

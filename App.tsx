@@ -47,6 +47,17 @@ const App: React.FC = () => {
   const [isLimitReached, setIsLimitReached] = useState<boolean>(false);
   const MAX_ATTEMPTS = 2;
 
+  // Helper: Get Current Date Key in WIB (UTC+7)
+  const getWIBDateKey = () => {
+    const now = new Date();
+    // Convert current time to UTC, then add 7 hours for WIB
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const wibTime = new Date(utc + (3600000 * 7));
+    
+    // Return Format YYYY-MM-DD
+    return `${wibTime.getFullYear()}-${wibTime.getMonth() + 1}-${wibTime.getDate()}`;
+  };
+
   // Load history & Check IP Limit on mount
   useEffect(() => {
     // 1. Load User History
@@ -72,9 +83,14 @@ const App: React.FC = () => {
         const limitDataStr = localStorage.getItem('oncoscreen_limit');
         if (limitDataStr) {
           const limitData = JSON.parse(limitDataStr);
-          // If IP matches and count >= MAX, block
-          if (limitData.ip === currentIp && limitData.count >= MAX_ATTEMPTS) {
-            setIsLimitReached(true);
+          const todayKey = getWIBDateKey();
+
+          // Check if IP matches AND Date matches (Same Day)
+          // If date is different, it means a new day (WIB), so we don't block yet.
+          if (limitData.ip === currentIp && limitData.date === todayKey) {
+            if (limitData.count >= MAX_ATTEMPTS) {
+              setIsLimitReached(true);
+            }
           }
         }
       } catch (error) {
@@ -231,16 +247,20 @@ const App: React.FC = () => {
     if (!userIp) return; // Can't track if IP fetch failed
 
     const limitDataStr = localStorage.getItem('oncoscreen_limit');
+    const todayKey = getWIBDateKey();
     let newCount = 1;
 
     if (limitDataStr) {
       const limitData = JSON.parse(limitDataStr);
-      if (limitData.ip === userIp) {
+      // Logic: If same IP AND Same Date -> Increment
+      // If Different Date -> Reset to 1 (which is this current attempt)
+      if (limitData.ip === userIp && limitData.date === todayKey) {
         newCount = limitData.count + 1;
       }
     }
 
-    const newData = { ip: userIp, count: newCount };
+    // Save with the current Date Key (WIB)
+    const newData = { ip: userIp, count: newCount, date: todayKey };
     localStorage.setItem('oncoscreen_limit', JSON.stringify(newData));
 
     if (newCount >= MAX_ATTEMPTS) {
@@ -414,7 +434,7 @@ const App: React.FC = () => {
           <div>
             <h3 className="font-bold text-rose-700 text-sm">Batas Screening Tercapai</h3>
             <p className="text-xs text-rose-600 mt-1">
-              Anda telah mencapai batas maksimum 2 kali screening dari IP Address ini. Silakan hubungi admin jika ingin melakukan screening lebih lanjut.
+              Anda telah mencapai batas maksimum 2 kali screening dari IP Address ini <strong>untuk hari ini</strong>. Silakan coba lagi besok.
             </p>
           </div>
         </div>

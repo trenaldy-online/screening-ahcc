@@ -21,7 +21,7 @@ const ReportPage: React.FC = () => {
 
   useEffect(() => {
     // Mengambil data dari Database Laravel berdasarkan ID di URL
-    fetch(`http://127.0.0.1:8000/api/report/${id}`)
+    fetch(`https://dashboardhana.rumahsakitkankersurabaya.com/api/report/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success') {
@@ -245,7 +245,7 @@ const ChatFlow: React.FC = () => {
     historyToSend.push({ role: 'user', text: messageText, images: imagesArray.length > 0 ? imagesArray : undefined });
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/chat", {
+      const response = await fetch("https://dashboardhana.rumahsakitkankersurabaya.com/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ userData, chatHistory: historyToSend, isFinalTurn: currentTurn >= MAX_TURNS }),

@@ -116,6 +116,27 @@ const ReportPage: React.FC = () => {
             </div>
           )}
 
+          {/* ---------------- TAMBAHKAN KODE SARAN DI SINI ---------------- */}
+          {report.recommendations && report.recommendations.length > 0 && (
+            <div className="bg-teal-50 rounded-2xl p-5 border border-teal-100 shadow-sm relative overflow-hidden">
+              <h3 className="font-bold text-teal-900 mb-3 flex items-center gap-2 relative z-10">
+                <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Saran & Tindak Lanjut Medis
+              </h3>
+              <ul className="space-y-2 relative z-10">
+                {report.recommendations.map((saran: string, index: number) => (
+                  <li key={index} className="flex items-start text-teal-800 text-sm md:text-base font-medium">
+                    <span className="mr-2 mt-0.5 font-bold text-teal-500">•</span>
+                    <span className="leading-relaxed">{saran}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {/* ------------------------------------------------------------- */}
+
           <div className="bg-white rounded-2xl p-6 shadow-sm border text-center flex flex-col items-center justify-center">
             <h3 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><QrCode className="w-5 h-5 text-slate-500"/> Akses Laporan Online</h3>
             <p className="text-xs text-slate-500 mb-4 max-w-xs mx-auto">Scan QR Code ini untuk membuka dokumen rekam medis digital ini kapan saja.</p>

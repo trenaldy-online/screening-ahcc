@@ -384,8 +384,23 @@ const ChatFlow: React.FC = () => {
     }
 
     if (!isHumanVerified) { alert("⚠️ Mohon centang verifikasi keamanan."); return; }
+    
+    // 1. TANGKAP URL INDUK (Tempat Iframe Ditempel)
+    const currentSourceUrl = document.referrer || window.location.href;
+
+    // 2. SISIPKAN URL KE DALAM USER DATA BARU
+    const updatedUserData = {
+      ...userData,
+      source_url: currentSourceUrl
+    };
+
+    // 3. Simpan ke state React
+    setUserData(updatedUserData);
+    
     setCurrentStep(AppStep.CHAT);
-    await sendChatToLaravel("Keluhan awal saya: " + userData.chiefComplaint, [], true);
+
+    // 4. Kirim menggunakan updatedUserData agar URL-nya langsung terbawa ke Laravel
+    await sendChatToLaravel("Keluhan awal saya: " + userData.chiefComplaint, [], true, updatedUserData);
   };
 
   if (isLocked) {

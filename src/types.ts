@@ -13,6 +13,7 @@ export interface UserData {
   whatsapp: string;
   email: string;
   chiefComplaint: string;
+  source_url?: string;
 }
 
 export interface ChatMessage {
